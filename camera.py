@@ -14,13 +14,7 @@ class VideoCamera(object):
         self.video.release()
 
 
-    def detect_faces(self, frame):
-        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
-        return frame
-
+ 
    
     def get_frame(self):
         success, image = self.video.read()

@@ -1,0 +1,15 @@
+.test{
+    @apply !tw-bg-blue-500
+}
+.body{
+    @apply tw-bg-blue-100  
+}
+.container {
+    @apply sm:tw-mt-11 tw-flex tw-justify-center tw-items-center tw-w-full  tw-py-3
+}
+.container video {
+    @apply tw-p-4 tw-bg-blue-50  tw-border-blue-300 tw-border-2 tw-border-dotted 
+}
+.card {
+    @apply   tw-w-fit
+}
