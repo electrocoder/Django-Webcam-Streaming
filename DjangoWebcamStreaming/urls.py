@@ -22,10 +22,9 @@ from  home import views as home_views
 
 urlpatterns = [
     # path('monitor/', lambda r: StreamingHttpResponse(gen(VideoCamera()),
-                                                    #  content_type='multipart/x-mixed-replace; boundary=frame')),
+                                                       #  content_type='multipart/x-mixed-replace; boundary=frame')),
+    path('',home_views.video_monitor, name='video_monitor'),
     path('admin/', admin.site.urls),
-    
     path('monitor/',home_views.video_monitor, name='video_monitor'),
-    path('video_feed/', home_views.video_feed, name='video_feed'),
     path('capture_photo/', home_views.capture_photo, name='capture_photo'),
 ]
