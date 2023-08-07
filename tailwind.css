@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form{
+    @apply bg-[#F9F9F9] w-[350px] p-4 rounded-md  
+}
+.form h4 {
+    @apply text-gray-600
+}
+.succses{
+    @apply  bg-green-500  absolute text-center p-2  w-full text-white  z-[999]
+}
+.error {
+    @apply bg-red-500  absolute text-center p-2  w-full text-white  z-[999]
+}
+.frame-area{
+    @apply w-[94.5%] border-opacity-40 sm:mt-[46px] h-[76.9%] absolute border-b-[10px] border-x-[40px] border-t-[40px] border-solid border-[#FD5959]
+}
+.frame-text{
+    @apply absolute bg-opacity-40 text-center w-full p-4 bottom-0 bg-[#FD5959] text-white font-bold
+}
+.save_image{
+    @apply border-2 border-blue-300 border-dashed w-[650px] h-[490px]
+}
+.save_video {
+    @apply border-2 border-blue-300 border-dashed 
+}
+.capture_button {
+    @apply mt-4 bg-[#EE6F57]  hover:bg-red-500 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded
+}
+.form_label{
+    @apply block mb-2 text-sm font-medium text-gray-600 dark:text-white
+}
+
+.form_input{
+@apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+}
+.send_button {
+    @apply duration-300 text-white bg-[#FF6969] hover:bg-orange-600 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center
+}
+
