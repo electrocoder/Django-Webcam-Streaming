@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <script src="https://kit.fontawesome.com/0d16ee4359.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+    <title>Video Akışı ve Fotoğraf Çekimi</title>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/tw.css' %} ">
+    <link rel="stylesheet" href="{% static 'css/style.css' %} ">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<body class="bg-[#43658B]">
+    <div class="container flex items-center justify-center">
+        <div class="card w-fit mt-9 p-3 flex items-center ">
+            <h5 class="text-3xl text-gray-700">EHT</h5>
+            <div id="succses-message" style="display: none;" class="succses">Yüz tespit edildi.</div>
+            <div id="error-message"   style="display: none;" class="error">Yüz tespit edilemedi.</div>
+            <div class="frame-area" id="frame-area">
+                <div class="frame-text">
+                    Align Boxes then Capture
+                </div>
+            </div>
+            <img id="captured-image" class="save_image" src="" alt="Captured Photo" style="display: none;"  >
+            <video class="save_video" id="video-stream"  width="640" height="580" autoplay></video>
+            <button class="capture_button" id="capture_photo" data-capture-url="{% url 'capture_photo' %}" onclick="capturePhoto()"><i class="fa fa-camera text-xl mx-3" aria-hidden="true"></i>        Capture Photo</button>
+        </div>
+    </div>
+    <!-- İlgili formun varsayılan olarak gizli olması için style ekleniyor -->
+    <div class="form absolute bg-red-500" id="contact_form" style="display:none;z-index: 999;">
+        <form method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+                <h4>We’ll send your simulation link</h4>
+                <div class="mb-6">
+                    <label for="text" class="form_label">Name</label>
+                    <input type="text" name="name"  id="text" class=" form_input" placeholder="Kane" required>
+                </div>
+                <div class="mb-6">
+                    <label for="email" class="form_label">Your email</label>
+                    <input type="email"  name="email" id="email" class=" form_input" placeholder="name@flowbite.com" required>
+                </div>
+                <div class="mb-6">
+                    <label  for="text" class="form_label">Phone</label>
+                    <input name="phone" type="tel" class="form_input" id="exampleFormControlInputTel" placeholder="Phone" />
+                </div>
+                <div class="mb-6">
+                    <label for="text" class="form_label" style="display:none">Image</label>
+                    <input type="textarea" name="image" id="file-input" style="display:none">
+                </div>
+                <button type="submit" id="capture-button" class="send_button ">Send</button>
+        </form> 
+        <script>
+            $(document).ready(function() {
+                var isDragging = false;
+                var startPosX, startPosY, offsetX, offsetY;
+                var $draggableElement;
+            
+                $("#contact_form").on("mousedown", function(e) {
+                    isDragging = true;
+                    $draggableElement = $(this);
+                    startPosX = $draggableElement.offset().left;
+                    startPosY = $draggableElement.offset().top;
+                    offsetX = e.pageX - startPosX;
+                    offsetY = e.pageY - startPosY;
+                });
+            
+                $(document).on("mousemove", function(e) {
+                    if (isDragging) {
+                        var newX = e.pageX - offsetX;
+                        var newY = e.pageY - offsetY;
+                        $draggableElement.offset({
+                            left: newX,
+                            top: newY
+                        });
+                    }
+                }).on("mouseup", function() {
+                    isDragging = false;
+                });
+            });
+            
+        </script>
+</body>
+</html>
