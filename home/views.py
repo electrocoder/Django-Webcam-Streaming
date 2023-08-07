@@ -1,11 +1,14 @@
 import cv2
 import base64
-import io
-import datetime
-from django.http import HttpResponse, StreamingHttpResponse
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.http import HttpResponse
 from django.shortcuts import render
 from json_response import JsonResponse
-
+from django.core.mail import EmailMultiAlternatives
+from .forms import EmailForm
+from django.core.files.base import ContentFile
+import mimetypes
 class VideoCamera(object):
     def __init__(self):
         self.video = cv2.VideoCapture(0)
@@ -37,7 +40,7 @@ class VideoCamera(object):
                 ret, jpeg = cv2.imencode('.jpg', image)
 
             # Videoyu yatay olarak düzelt
-            #image_flipped = cv2.flip(jpeg, 1)  # 1 yatay döndürme
+            image_flipped = cv2.flip(jpeg, 1)  # 1 yatay döndürme
 
             return b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + image_flipped.tobytes() + b'\r\n\r\n'
         return None
@@ -47,8 +50,35 @@ class VideoCamera(object):
 
 
 def video_monitor(request):
-    return render(request, 'monitor.html')
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            phone = form.cleaned_data['phone']
+            image_base64 = form.cleaned_data['image']
+            
+            # Base64 verisini jpg dosyasına dönüştürme
+            format, image_data = image_base64.split(';base64,')
+            extension = format.split('/')[-1]
+            image = ContentFile(base64.b64decode(image_data), name=f'image.{extension}')
 
+            # HTML içeriğini oluşturuyoruz
+            html_content = render_to_string('email_template.html', {'name': name, 'email': email, 'phone': phone})
+            plain_content = strip_tags(html_content)
+
+            email_subject = 'New Contact Form Submission'
+            email_from = 'info@esthetichairturkey.com'
+            email_to = ['rojtoy@gmail.com']
+
+            # E-posta gönderme işlemi
+            email = EmailMultiAlternatives(email_subject, plain_content, email_from, email_to)
+            email.attach(image.name, image.read(), mimetypes.guess_type(image.name)[0])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
+
+            return render(request, "thank-you.html")
+    return render(request, 'monitor.html')
 def capture_photo(request):
     camera = VideoCamera()
     camera.start_capturing()
@@ -61,11 +91,9 @@ def capture_photo(request):
             ret, jpeg = cv2.imencode('.jpg', image_with_faces)
             image_base64 = base64.b64encode(jpeg.tobytes()).decode()
             return JsonResponse({'error': 'Yüz tespit edilemedi.','image': 'data:image/jpeg;base64,' + image_base64})
-
-
         ret, jpeg = cv2.imencode('.jpg', image_with_faces)
         image_base64 = base64.b64encode(jpeg.tobytes()).decode()
-
+        
         # Base64 formatında çekilen fotoğrafı JSON formatında döndür
         return JsonResponse({'image': 'data:image/jpeg;base64,' + image_base64})
 
